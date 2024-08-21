@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-Shader* Shader_prelude(const std::string& vs_file_path, const std::string& fs_file_path) {
+Shader* Shader_new(const std::string& vs_file_path, const std::string& fs_file_path) {
     Shader* shader = new Shader();
     shader->vs_file_path = vs_file_path;
     shader->fs_file_path = fs_file_path;
@@ -20,7 +20,7 @@ Shader* Shader_prelude(const std::string& vs_file_path, const std::string& fs_fi
 // The "Just give me a fucking shader" way to go about things.
 // -----------------------------------------------------------
 Shader* Shader_gimme(const std::string& vs_file_path, const std::string& fs_file_path) {
-    Shader* shader = Shader_prelude(vs_file_path, fs_file_path);
+    Shader* shader = Shader_new(vs_file_path, fs_file_path);
     shader->program_id = Shader_finalize(shader);
     return shader;
 }
@@ -62,4 +62,34 @@ unsigned int Shader_finalize(Shader* shader) {
     glDeleteShader(_fs);
 
     return program;
+}
+
+void Shader_bind(Shader* shader) {
+    glUseProgram(shader->program_id);
+}
+
+void Shader_unbind(Shader* shader) {
+    glUseProgram(0);
+}
+
+void Shader_set_uniform4f(Shader* shader, const std::string& name, float v0, float v1, float v2, float v3) {
+    glUniform4f(Shader_get_uniform_location(shader, name.c_str()), v0, v1, v2, v3);
+}
+
+int Shader_get_uniform_location(Shader* shader, const std::string& name) {
+    if (shader->uniform_cache.find(name) != shader->uniform_cache.end())
+        return shader->uniform_cache[name];
+
+    auto loc = glGetUniformLocation(shader->program_id, name.c_str());
+    if (loc == -1)
+        printf("Warning: uniform %s doesn't exist\n", name.c_str());
+    else
+        shader->uniform_cache[name] = loc;
+
+    return loc;
+}
+
+void Shader_delete(Shader* shader) {
+    glDeleteProgram(shader->program_id);
+    delete shader;
 }

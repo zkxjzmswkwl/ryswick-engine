@@ -9,6 +9,7 @@
 #include <string>
 
 Shader* shader;
+
 float vertices[] = {
         -0.5f, -0.5f,
         0.5f,  -0.5f,
@@ -80,9 +81,9 @@ void draw_square() {
 
     IndexBuffer* ib = IndexBuffer_new(indices, 6);
 
-    glUseProgram(shader->program_id);
-    auto s_u_Color = glGetUniformLocation(shader->program_id, "u_Color");
-    glUniform4f(s_u_Color, 1.0f, 0.3f, 0.3f, 1.0f);
+    Shader_bind(shader);
+    Shader_set_uniform4f(shader, "u_Color", 1.0f, 0.3f, 0.3f, 1.0f);
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
     VertexBuffer_delete(vb);
