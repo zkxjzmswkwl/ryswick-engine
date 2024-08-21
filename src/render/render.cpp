@@ -1,16 +1,24 @@
 #include "render.h"
 #include "shader.h"
 #include <stdio.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "renderer.h"
+#include "vertexbuffer.h"
+#include "indexbuffer.h"
+#include "vertexarray.h"
 #include <stdlib.h>
 #include <string>
 
 Shader* shader;
-float vertices[6] = {
+float vertices[] = {
         -0.5f, -0.5f,
         0.5f,  -0.5f,
-        0.5f, 0.5f
+        0.5f, 0.5f,
+
+        -0.5f, 0.5f,
+};
+unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0
 };
 
 RenderContext* Render_prelude() {
@@ -20,9 +28,13 @@ RenderContext* Render_prelude() {
     }
 
     glfwSetErrorCallback(glfw_error_callback);
-    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
     RenderContext* ctx = (RenderContext*)malloc(sizeof(RenderContext));
     if (!ctx) {
@@ -54,23 +66,33 @@ RenderContext* Render_prelude() {
     return ctx;
 }
 
-void draw_triangle() {
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 6*sizeof(float), vertices, GL_STATIC_DRAW);
+void draw_square() {
+    unsigned int vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+    VertexArray va;
+    VertexBuffer* vb = VertexBuffer_new(vertices, 4*2*sizeof(float));
+    VertexBufferLayout layout;
+
+    VBL_push<float>(&layout, 2);
+    VertexArray_add_buffer(&va, vb, &layout);
+
+    IndexBuffer* ib = IndexBuffer_new(indices, 6);
 
     glUseProgram(shader->program_id);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    auto s_u_Color = glGetUniformLocation(shader->program_id, "u_Color");
+    glUniform4f(s_u_Color, 1.0f, 0.3f, 0.3f, 1.0f);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+    VertexBuffer_delete(vb);
+    IndexBuffer_delete(ib);
 }
 
 void render() {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.12f, 0.12f, 0.12f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    draw_triangle();
+    draw_square();
 }
 
 void process_input(GLFWwindow* window) {
