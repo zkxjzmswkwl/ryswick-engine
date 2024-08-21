@@ -8,7 +8,7 @@ int main(int, char**) {
         return 1;
     }
 
-    Render_loop(render_ctx);
+    Render_loop(render_ctx->window);
     Render_die(render_ctx);
     return 0;
 }

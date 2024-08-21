@@ -8,9 +8,9 @@
 
 Shader* shader;
 float vertices[6] = {
-    -0.5f, -0.5f,
-        0.0f,  0.5f,
-        0.5f, -0.5f
+        -0.5f, -0.5f,
+        0.5f,  -0.5f,
+        0.5f, 0.5f
 };
 
 RenderContext* Render_prelude() {

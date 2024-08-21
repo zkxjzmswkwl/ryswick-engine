@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(Milo VERSION 0.1.0 LANGUAGES C CXX)
+project(Ryswick VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 23)
 
 
@@ -13,9 +13,9 @@ find_package(OpenGL REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 
-add_executable(Milo ${SOURCES} ${HEADERS})
+add_executable(Ryswick ${SOURCES} ${HEADERS})
 
-target_link_libraries(Milo PUBLIC GLEW::GLEW)
-target_link_libraries(Milo PUBLIC ${OPENGL_LIBRARIES})
-target_link_libraries(Milo PUBLIC glfw)
-target_link_libraries(Milo PRIVATE glad::glad)
+target_link_libraries(Ryswick PUBLIC GLEW::GLEW)
+target_link_libraries(Ryswick PUBLIC ${OPENGL_LIBRARIES})
+target_link_libraries(Ryswick PUBLIC glfw)
+target_link_libraries(Ryswick PRIVATE glad::glad)
