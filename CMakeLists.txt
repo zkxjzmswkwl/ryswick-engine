@@ -12,6 +12,8 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
+
 
 add_executable(Ryswick ${SOURCES} ${HEADERS})
 
@@ -19,3 +21,4 @@ target_link_libraries(Ryswick PUBLIC GLEW::GLEW)
 target_link_libraries(Ryswick PUBLIC ${OPENGL_LIBRARIES})
 target_link_libraries(Ryswick PUBLIC glfw)
 target_link_libraries(Ryswick PRIVATE glad::glad)
+target_link_libraries(Ryswick PRIVATE glm::glm)

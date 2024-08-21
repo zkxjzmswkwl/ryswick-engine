@@ -72,8 +72,28 @@ void Shader_unbind(Shader* shader) {
     glUseProgram(0);
 }
 
+void Shader_set_uniform1i(Shader* shader, const std::string& name, int v0) {
+    glUniform1i(Shader_get_uniform_location(shader, name.c_str()), v0);
+}
+
+void Shader_set_uniform1f(Shader* shader, const std::string& name, float v0) {
+    glUniform1f(Shader_get_uniform_location(shader, name.c_str()), v0);
+}
+
+void Shader_set_uniform2f(Shader* shader, const std::string& name, float v0, float v1) {
+    glUniform2f(Shader_get_uniform_location(shader, name.c_str()), v0, v1);
+}
+
+void Shader_set_uniform3f(Shader* shader, const std::string& name, float v0, float v1, float v2) {
+    glUniform3f(Shader_get_uniform_location(shader, name.c_str()), v0, v1, v2);
+}
+
 void Shader_set_uniform4f(Shader* shader, const std::string& name, float v0, float v1, float v2, float v3) {
     glUniform4f(Shader_get_uniform_location(shader, name.c_str()), v0, v1, v2, v3);
+}
+
+void Shader_set_uniform_mat4f(Shader* shader, const std::string& name, glm::mat4 matrix) {
+    glUniformMatrix4fv(Shader_get_uniform_location(shader, name.c_str()), 1, GL_FALSE, &matrix[0][0]);
 }
 
 int Shader_get_uniform_location(Shader* shader, const std::string& name) {

@@ -1,21 +1,25 @@
 #include "render.h"
 #include "shader.h"
-#include <stdio.h>
 #include "renderer.h"
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 #include "vertexarray.h"
+#include "texture.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 Shader* shader;
+Texture* texture;
 
 float vertices[] = {
-        -0.5f, -0.5f,
-        0.5f,  -0.5f,
-        0.5f, 0.5f,
+        -0.5f, -0.5f, 0.0f, 0.0f,
+        0.5f,  -0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 1.0f, 1.0f,
 
-        -0.5f, 0.5f,
+        -0.5f, 0.5f, 0.0f, 1.0f
 };
 unsigned int indices[] = {
         0, 1, 2,
@@ -64,36 +68,34 @@ RenderContext* Render_prelude() {
     });
 
     shader = Shader_gimme("../../src/shaders/vertex.glsl", "../../src/shaders/fragment.glsl");
+    texture = Texture_new("C:\\Users\\owcar\\Downloads\\AIGen\\wat.jpg");
+    Texture_bind(texture, 0);
     return ctx;
 }
 
-void draw_square() {
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    VertexArray va;
-    VertexBuffer* vb = VertexBuffer_new(vertices, 4*2*sizeof(float));
+void draw_square(GLFWwindow* window) {
+    VertexArray* va = VertexArray_new();
+    VertexBuffer* vb = VertexBuffer_new(vertices, 4*4*sizeof(float));
+    IndexBuffer* ib = IndexBuffer_new(indices, 6);
     VertexBufferLayout layout;
 
     VBL_push<float>(&layout, 2);
-    VertexArray_add_buffer(&va, vb, &layout);
+    VBL_push<float>(&layout, 2);
+    VertexArray_add_buffer(va, vb, &layout);
+    Shader_set_uniform1i(shader, "u_Texture", 0);
+    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    Shader_set_uniform_mat4f(shader, "u_MVP", proj);
 
-    IndexBuffer* ib = IndexBuffer_new(indices, 6);
-
-    Shader_bind(shader);
-    Shader_set_uniform4f(shader, "u_Color", 1.0f, 0.3f, 0.3f, 1.0f);
-
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    Renderer_draw(va, ib, shader);
 
     VertexBuffer_delete(vb);
     IndexBuffer_delete(ib);
+    VertexArray_delete(va);
 }
 
-void render() {
-    glClearColor(0.12f, 0.12f, 0.12f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    draw_square();
+void render(GLFWwindow* window) {
+    Renderer_clear();
+    draw_square(window);
 }
 
 void process_input(GLFWwindow* window) {
@@ -104,7 +106,7 @@ void process_input(GLFWwindow* window) {
 void Render_loop(GLFWwindow* window) {
     while (!glfwWindowShouldClose(window)) {
         process_input(window);
-        render();
+        render(window);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
