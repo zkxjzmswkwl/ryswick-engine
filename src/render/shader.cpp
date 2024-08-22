@@ -10,9 +10,9 @@ Shader* Shader_new(const std::string& vs_file_path, const std::string& fs_file_p
     std::getline(std::ifstream(vs_file_path), shader->vs_source, '\0');
     std::getline(std::ifstream(fs_file_path), shader->fs_source, '\0');
 
-    printf("VERTEX\n%s\n", shader->vs_source.c_str());
-    printf("=========================\n");
-    printf("FRAGMENT\n%s\n", shader->fs_source.c_str());
+    // printf("VERTEX\n%s\n", shader->vs_source.c_str());
+    // printf("=========================\n");
+    // printf("FRAGMENT\n%s\n", shader->fs_source.c_str());
 
     return shader;
 }

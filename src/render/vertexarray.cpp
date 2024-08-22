@@ -32,3 +32,7 @@ void VertexArray_add_buffer(VertexArray* va, VertexBuffer* vb, VertexBufferLayou
         offset += element.count * VertexBufferElement::size_of_type(element.type);
     }
 }
+
+VertexBufferLayout* VertexBufferLayout_new() {
+    return new VertexBufferLayout();
+}

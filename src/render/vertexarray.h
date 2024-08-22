@@ -39,6 +39,8 @@ struct VertexBufferLayout {
     unsigned int stride = 0;
 };
 
+VertexBufferLayout* VertexBufferLayout_new();
+
 template <typename T>
 static void VBL_push(VertexBufferLayout* layout, unsigned int count) {
 }
