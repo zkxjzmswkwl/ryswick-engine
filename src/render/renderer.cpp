@@ -12,5 +12,6 @@ void Renderer_draw(VertexArray* va, IndexBuffer* ib, Shader* shader) {
 }
 
 void Renderer_clear() {
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
