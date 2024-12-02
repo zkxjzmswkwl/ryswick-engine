@@ -5,4 +5,4 @@ OpenGL, C/C++23.
 It's factually slower.
 
 ## "But you use *some* classes from std?"
-I get to pick and choose when I give a shit. That's the beauty of it being my project.
+I get to pick and choose when I care. That's the beauty of it being my project.
